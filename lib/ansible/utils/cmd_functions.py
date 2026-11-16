@@ -23,7 +23,7 @@ import shlex
 import subprocess
 import sys
 
-from ansible.module_utils.common.text.converters import to_bytes
+from ansible.module_utils.common.text.converters import to_bytes, to_text
 from ansible.utils.display import Display
 from ansible.utils.sentinel import Sentinel
 
@@ -54,7 +54,7 @@ def run_cmd(cmd, live=Sentinel, readsize=10):
     # subprocess should be passed byte strings.
     cmdargs = [to_bytes(a, errors='surrogate_or_strict') for a in cmdargs]
 
-    p = subprocess.Popen(cmdargs, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([to_text(c) for c in cmdargs], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     stdout = b''
     stderr = b''

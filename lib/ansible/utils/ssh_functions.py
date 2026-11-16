@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import subprocess
 
-from ansible.module_utils.common.text.converters import to_bytes
+from ansible.module_utils.common.text.converters import to_bytes, to_text
 from ansible.utils.display import Display
 
 display = Display()
@@ -39,7 +39,7 @@ def check_for_controlpersist(ssh_executable):
     b_ssh_exec = to_bytes(ssh_executable, errors='surrogate_or_strict')
     has_cp = True
     try:
-        cmd = subprocess.Popen([b_ssh_exec, '-o', 'ControlPersist'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cmd = subprocess.Popen([to_text(b_ssh_exec), '-o', 'ControlPersist'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (out, err) = cmd.communicate()
         if b"Bad configuration option" in err or b"Usage:" in err:
             has_cp = False

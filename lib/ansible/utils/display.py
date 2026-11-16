@@ -340,7 +340,7 @@ class Display(metaclass=Singleton):
 
         if self.b_cowsay:
             try:
-                cmd = subprocess.Popen([self.b_cowsay, "-l"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                cmd = subprocess.Popen([to_text(self.b_cowsay), "-l"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 (out, err) = cmd.communicate()
                 if cmd.returncode:
                     raise Exception
@@ -823,7 +823,7 @@ class Display(metaclass=Singleton):
             runcmd.append(b'-f')
             runcmd.append(to_bytes(thecow))
         runcmd.append(to_bytes(msg))
-        cmd = subprocess.Popen(runcmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cmd = subprocess.Popen([to_text(c) for c in runcmd], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (out, err) = cmd.communicate()
         self.display(u"%s\n" % to_text(out), color=color)
 

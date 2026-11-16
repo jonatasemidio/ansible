@@ -1127,7 +1127,7 @@ class Connection(ConnectionBase):
             try:
                 # Make sure stdin is a proper pty to avoid tcgetattr errors
                 master, slave = pty.openpty()
-                p = subprocess.Popen(cmd, stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **popen_kwargs)
+                p = subprocess.Popen([to_text(c) for c in cmd], stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **popen_kwargs)
                 stdin = os.fdopen(master, 'wb', 0)
                 os.close(slave)
             except OSError:
@@ -1135,7 +1135,7 @@ class Connection(ConnectionBase):
 
         if not p:
             try:
-                p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                p = subprocess.Popen([to_text(c) for c in cmd], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE, **popen_kwargs)
                 stdin = p.stdin  # type: ignore[assignment] # stdin will be set and not None due to the calls above
             except OSError as ex:
@@ -1566,13 +1566,13 @@ class Connection(ConnectionBase):
         # 'check' will determine this.
         cmd = self._build_command(self.get_option('ssh_executable'), 'ssh', '-O', 'check', self.host)
         display.vvv('sending connection check: %s' % to_text(cmd), host=self.host)
-        p = subprocess.run(cmd, stderr=subprocess.PIPE, check=False, text=True)
+        p = subprocess.run([to_text(c) for c in cmd], stderr=subprocess.PIPE, check=False, text=True)
         if p.returncode != 0:
             display.vvv(f"No connection to reset: {p.stderr}", host=self.host)
         else:
             cmd = self._build_command(self.get_option('ssh_executable'), 'ssh', '-O', 'stop', self.host)
             display.vvv('sending connection stop: %s' % to_text(cmd), host=self.host)
-            p = subprocess.run(cmd, stderr=subprocess.PIPE, check=False, text=True)
+            p = subprocess.run([to_text(c) for c in cmd], stderr=subprocess.PIPE, check=False, text=True)
             if p.returncode != 0:
                 display.warning(f"Failed to reset connection: {p.stderr}")
 

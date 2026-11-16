@@ -617,7 +617,7 @@ class CLI(ABC):
 
         elif is_executable(b_pwd_file):
             display.vvvv(u'The password file %s is a script.' % to_text(pwd_file))
-            cmd = [b_pwd_file]
+            cmd = [to_text(pwd_file)]
 
             try:
                 p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

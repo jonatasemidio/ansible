@@ -102,7 +102,7 @@ class Connection(ConnectionBase):
         if isinstance(cmd, (str, bytes)):
             cmd = to_text(cmd)
         else:
-            cmd = map(to_text, cmd)
+            cmd = list(map(to_text, cmd))
 
         pty_primary = None
         stdin = subprocess.PIPE
